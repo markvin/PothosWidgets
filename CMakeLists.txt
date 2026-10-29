@@ -69,12 +69,24 @@ set(SOURCES
     indicator.cpp
     TextEntry.cpp
     ColoredBox.cpp
+    TestWidgets.cpp
 )
 
 #the self-tests under /widgets/tests, run one by one by widgets.selftests
 set(WIDGETS_TESTS
     test_qstring_convert
     test_qstring_serialize
+    test_chat_box
+    test_colored_box
+    test_drop_down
+    test_numeric_entry
+    test_odometer
+    test_planar_select
+    test_push_button
+    test_radio_group
+    test_slider
+    test_text_display
+    test_text_entry
 )
 
 POTHOS_MODULE_UTIL(
