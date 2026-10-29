@@ -11,6 +11,7 @@
 #include <QString>
 #include <QStringList>
 #include <QWidget>
+#include <cstring>
 #include <iostream>
 #include <memory>
 #include <mutex>
@@ -51,7 +52,9 @@ static void processEvents(void)
 }
 
 //record the Qt warnings while a test runs: a queued call to a missing slot,
-//or with an argument type that Qt does not know, gives only a warning
+//or with an argument type that Qt does not know, gives only a warning.
+//Qt gives these warnings in the "default" category. The other categories
+//(for example qt.qpa.fonts) tell about the platform, not about the widgets.
 class QtWarningCheck
 {
 public:
@@ -82,7 +85,8 @@ public:
 private:
     static void handler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
     {
-        if (type == QtWarningMsg or type == QtCriticalMsg)
+        const bool defaultCategory = context.category == nullptr or std::strcmp(context.category, "default") == 0;
+        if ((type == QtWarningMsg or type == QtCriticalMsg) and defaultCategory)
         {
             std::lock_guard<std::mutex> lock(_mutex);
             _warnings.push_back(msg.toStdString());
