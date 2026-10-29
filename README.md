@@ -11,7 +11,9 @@ only the public API of the core.
 
 - an installed Pothos core (`find_package(Pothos)`);
 - Qt 6.5 or higher with the Widgets component (for example the Arch Linux
-  package `qt6-base`, or a Qt install from the Qt installer);
+  package `qt6-base`, or a Qt install from the Qt installer). The Qt Gui
+  CMake package also needs the OpenGL headers (on Debian and Ubuntu, for
+  example `libgl-dev`);
 - CMake 3.25 or higher and a C++23 compiler.
 
 When Qt 6 is missing or older than 6.5, the configure step stops with an

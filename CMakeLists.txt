@@ -33,9 +33,17 @@ endif()
 ########################################################################
 find_package(Qt6 6.5 CONFIG COMPONENTS Widgets)
 if(NOT Qt6_FOUND)
+    #Qt can be present without one of its own dependencies (for example the
+    #OpenGL headers for Qt Gui): show the reason that Qt gives
+    set(widgets_qt_reason "")
+    if(Qt6_NOT_FOUND_MESSAGE)
+        set(widgets_qt_reason "Reason given by Qt: ${Qt6_NOT_FOUND_MESSAGE}\n")
+    endif()
     message(FATAL_ERROR
         "PothosWidgets: Qt 6 (>= 6.5) with the Widgets component is missing.\n"
-        "Install the Qt 6 package of the system (for example qt6-base), "
+        "${widgets_qt_reason}"
+        "Install the Qt 6 package of the system (for example qt6-base; on Debian "
+        "and Ubuntu also the OpenGL headers, for example libgl-dev), "
         "or give CMAKE_PREFIX_PATH or Qt6_DIR. Refer to README.md.")
 endif()
 message(STATUS "PothosWidgets: Qt ${Qt6_VERSION}")
