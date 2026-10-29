@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: BSL-1.0
 
 #include <QtCore/qmath.h>
+#include <utility>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtGui/QMouseEvent>
@@ -102,7 +103,7 @@ Indicator::~Indicator()
 void Indicator::setFont(QFont font)
 {
   m_Font = font;
-  foreach(CustomDigit *digit, findChildren<CustomDigit *>())
+  for(CustomDigit *digit : std::as_const(m_Digits))
   {
     digit->setFont(font);
   }
@@ -128,10 +129,8 @@ void Indicator::setSize(int size)
 
   width = fm.horizontalAdvance('m') / 5 + 1;
 
-  while((digit = findChild<CustomDigit *>()))
-  {
-    delete digit;
-  }
+  qDeleteAll(m_Digits);
+  m_Digits.clear();
   while((item = m_Layout->takeAt(0)))
   {
     delete item;
@@ -148,6 +147,7 @@ void Indicator::setSize(int size)
     digit->setMouseTracking(true);
     digit->m_Delta = qint64(qPow(10.0, i - 1) + 0.5);
     digit->m_Indicator = this;
+    m_Digits.append(digit);
     if(i > 1 && i % 3 == 1) m_Layout->addSpacing(width);
   }
   m_Layout->addStretch();
@@ -161,7 +161,7 @@ void Indicator::setValue(qint64 value)
 {
   qint64 quotient;
   if(value < m_ValueMin || value > m_ValueMax) return;
-  foreach(CustomDigit *digit, findChildren<CustomDigit *>())
+  for(CustomDigit *digit : std::as_const(m_Digits))
   {
     quotient = value / digit->m_Delta;
     digit->m_Color = (quotient == 0)?Qt::lightGray:Qt::black;
@@ -194,7 +194,7 @@ void Indicator::setValueMax(qint64 value)
 
 void Indicator::setDeltaMin(qint64 delta)
 {
-  foreach(CustomDigit *digit, findChildren<CustomDigit *>())
+  for(CustomDigit *digit : std::as_const(m_Digits))
   {
     if(digit->m_Delta < delta)
     {

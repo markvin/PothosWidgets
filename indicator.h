@@ -5,8 +5,10 @@
 #define Indicator_h
 
 #include <QtWidgets/QFrame>
+#include <QtCore/QList>
 
 class QHBoxLayout;
+class CustomDigit;
 
 class Indicator: public QFrame
 {
@@ -32,6 +34,8 @@ signals:
 
 private:
   QHBoxLayout *m_Layout;
+  //the digit labels, most significant first (children of this frame)
+  QList<CustomDigit *> m_Digits;
   QFont m_Font;
   int m_Size;
   qint64 m_Value;
