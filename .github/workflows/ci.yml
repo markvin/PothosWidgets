@@ -8,7 +8,8 @@ env:
   # the branch of the Pothos core that widgets builds against
   POTHOS_CORE_REPO: markvin/PothosCore
   POTHOS_CORE_REF: pothos2
-  # the minimum Qt version of widgets (Ubuntu 24.04 has Qt 6.4: too old)
+  # the minimum Qt version of widgets (Ubuntu 24.04 has Qt 6.4: too old).
+  # A matrix entry can give a different Qt with "qt".
   QT_VERSION: '6.5.3'
 
 jobs:
@@ -45,6 +46,9 @@ jobs:
             cxx: cl
             config: Release
             extra: ""
+            # the headers of Qt 6.5.3 use stdext checked iterators, which
+            # the MSVC of windows-latest does not have any more
+            qt: '6.8.3'
 
     steps:
       - uses: actions/checkout@v4
@@ -97,7 +101,7 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
-          version: ${{ env.QT_VERSION }}
+          version: ${{ matrix.qt || env.QT_VERSION }}
           cache: true
 
       - name: Build and install the core

@@ -19,6 +19,10 @@ only the public API of the core.
 When Qt 6 is missing or older than 6.5, the configure step stops with an
 error. Qt 5 is not supported.
 
+On Windows with a current MSVC (Visual Studio 2026), use Qt 6.8 or higher:
+the headers of Qt 6.5 do not compile with its standard library. The CI
+uses Qt 6.5.3 on Linux and macOS, and Qt 6.8.3 on Windows.
+
 ## Build
 
 ```sh
