@@ -11,7 +11,6 @@
 #include <QString>
 #include <QStringList>
 #include <QWidget>
-#include <cstring>
 #include <iostream>
 #include <memory>
 #include <mutex>
@@ -51,10 +50,10 @@ static void processEvents(void)
     }
 }
 
-//record the Qt warnings while a test runs: a queued call to a missing slot,
-//or with an argument type that Qt does not know, gives only a warning.
-//Qt gives these warnings in the "default" category. The other categories
-//(for example qt.qpa.fonts) tell about the platform, not about the widgets.
+//record the Qt warnings of failed calls while a test runs: a queued call
+//to a missing slot, or with an argument type that Qt does not know, gives
+//only a warning. Other Qt warnings tell about the platform (for example a
+//missing font), not about the widgets: they do not count.
 class QtWarningCheck
 {
 public:
@@ -83,10 +82,16 @@ public:
     }
 
 private:
+    static bool isCallFailure(const QString &msg)
+    {
+        return msg.startsWith("QMetaObject::invokeMethod") or
+            msg.startsWith("QMetaMethod::invoke") or
+            msg.contains("Cannot queue arguments");
+    }
+
     static void handler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
     {
-        const bool defaultCategory = context.category == nullptr or std::strcmp(context.category, "default") == 0;
-        if ((type == QtWarningMsg or type == QtCriticalMsg) and defaultCategory)
+        if ((type == QtWarningMsg or type == QtCriticalMsg) and isCallFailure(msg))
         {
             std::lock_guard<std::mutex> lock(_mutex);
             _warnings.push_back(msg.toStdString());
