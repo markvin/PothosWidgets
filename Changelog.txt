@@ -1,5 +1,18 @@
 This this the changelog file for the Pothos Widgets toolkit.
 
+Release 0.6.0 (pending)
+==========================
+
+- Port to the modernized Pothos core (branch pothos2)
+- Qt 6 only, Qt 6.5 or higher; the Qt 5 support is removed
+- CMake 3.25 or higher; a missing Qt 6 stops the configure step
+- Install RPATH to the Qt library directory when Qt is not in a system directory
+- Odometer: keep the digits in a list, because findChildren needs Q_OBJECT in Qt 6
+- Replace the Qt macro foreach with a range for
+- Add a smoke test of all widgets (offscreen platform, no display necessary)
+- Add CI for Linux, macOS and Windows
+- Remove the debian packaging
+
 Release 0.5.1 (2021-07-25)
 ==========================
 
